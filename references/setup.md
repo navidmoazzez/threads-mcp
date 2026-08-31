@@ -90,7 +90,7 @@ A long-lived token is valid for 60 days. It can be refreshed once it is 24 hours
 old, and never after it expires: an expired token is replaced only by doing the
 OAuth flow again.
 
-The server refreshes tokens it owns automatically, inside the last seven days.
+The server refreshes tokens it owns automatically, inside the last 20 days.
 But an MCP server over stdio only runs while a client has it open, so if nothing
 runs for 60 days, nothing refreshes. Either leave the client connected, run
 `threads-mcp refresh` occasionally, or run the server over HTTP somewhere

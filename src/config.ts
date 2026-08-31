@@ -55,7 +55,14 @@ export type Config = {
   appSecret?: string;
   readOnly: boolean;
   allowDestructive: boolean;
-  /** Refresh a token this many days before it expires. */
+  /**
+   * Refresh a token this many days before it expires.
+   *
+   * Wide on purpose. Meta refuses to refresh a token in its first 24 hours, so
+   * a narrow window plus infrequent runs can miss every chance it gets. A wide
+   * one means many attempts before anything actually lapses, and refreshing
+   * twice just resets the clock twice.
+   */
   refreshWindowDays: number;
   /** Write refreshed tokens back to the store. */
   persistTokens: boolean;
@@ -176,7 +183,7 @@ export function loadConfig(stored: Account[] = []): Config {
     appSecret: process.env.THREADS_APP_SECRET?.trim() || undefined,
     readOnly: envFlag("THREADS_READ_ONLY", false),
     allowDestructive: envFlag("THREADS_ALLOW_DESTRUCTIVE", true),
-    refreshWindowDays: envInt("THREADS_REFRESH_WINDOW_DAYS", 7),
+    refreshWindowDays: envInt("THREADS_REFRESH_WINDOW_DAYS", 20),
     persistTokens: envFlag("THREADS_PERSIST_TOKENS", true),
     storePath: defaultStorePath(),
     requestTimeoutMs: envInt("THREADS_REQUEST_TIMEOUT_MS", 30_000),

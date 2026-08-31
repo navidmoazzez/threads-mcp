@@ -582,7 +582,7 @@ So:
 | `THREADS_ACCESS_TOKEN` in a config file | No. Nowhere to write the new value |
 | `THREADS_ACCOUNTS` JSON | No. Same reason |
 
-When the token is one the server owns, it refreshes on its own inside the last 7 days of its life, before the request that needed it, and again reactively if Meta says the token expired between the check and the call. `THREADS_REFRESH_WINDOW_DAYS` moves that window.
+When the token is one the server owns, it refreshes on its own inside the last 20 days of its life, before the request that needed it, and again reactively if Meta says the token expired between the check and the call. `THREADS_REFRESH_WINDOW_DAYS` moves that window.
 
 The catch is that an MCP server launched over stdio only exists while a client has it open. If nothing runs for 60 days, nothing refreshes. Three ways to avoid that:
 
@@ -731,7 +731,7 @@ Pull requests welcome. A change to text measurement, the container state machine
 | `THREADS_APP_SECRET` | none | Meta app secret. Needed only by `login` |
 | `THREADS_TOKEN_STORE` | `~/.threads-mcp/tokens.json` | Where tokens are kept |
 | `THREADS_PERSIST_TOKENS` | `1` | Write refreshed tokens back to the store |
-| `THREADS_REFRESH_WINDOW_DAYS` | `7` | Refresh this many days before expiry |
+| `THREADS_REFRESH_WINDOW_DAYS` | `20` | Refresh this many days before expiry |
 | `THREADS_READ_ONLY` | `0` | Hide every write from the tool list |
 | `THREADS_ALLOW_DESTRUCTIVE` | `1` | `0` blocks posting, replying and deleting |
 | `THREADS_AUDIT_LOG` | none | Append-only log of every attempted write |

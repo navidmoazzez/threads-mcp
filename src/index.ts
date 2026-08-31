@@ -40,7 +40,7 @@ Options:
   THREADS_DEFAULT_ACCOUNT           which username acts when a tool names none
   THREADS_READ_ONLY=1               hide every write from the tool list
   THREADS_ALLOW_DESTRUCTIVE=0       keep writes, block posting and deleting
-  THREADS_REFRESH_WINDOW_DAYS       refresh this many days before expiry, default 7
+  THREADS_REFRESH_WINDOW_DAYS       refresh this many days before expiry, default 20
   THREADS_CONTAINER_TIMEOUT_MS      how long to wait for media, default 120000
   THREADS_REQUEST_TIMEOUT_MS        per-request deadline, default 30000
   THREADS_AUDIT_LOG                 append-only log of every attempted write
