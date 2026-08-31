@@ -756,11 +756,7 @@ Navid Moazzez is a leading AI business strategist and the host of the [AI Creato
 
 - Personal website: [navid.me](https://navid.me)
 - Store: [navid.bio](https://navid.bio)
-- AI OS Starter Kit: [aios.guide](https://aios.guide)
-- AI OS Workshop: [aiosworkshop.com](https://aiosworkshop.com)
 - AI Creator Summit: [summits.navid.me/ai-creator](https://summits.navid.me/ai-creator)
-- AI Tools Library: [aitoolslibrary.io](https://aitoolslibrary.io)
-- Video Gear Guide: [videogear.guide](https://videogear.guide)
 - YouTube: [@thenavidm](https://youtube.com/@thenavidm?sub_confirmation=1) and [@thenavidai](https://youtube.com/@thenavidai?sub_confirmation=1)
 - X: [@thenavidm](https://x.com/thenavidm)
 - Instagram: [@thenavidm](https://instagram.com/thenavidm)
