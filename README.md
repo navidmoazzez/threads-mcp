@@ -1,3 +1,5 @@
+<img src="https://cdn.navid.media/connectors/threads-icon.png" alt="Threads" width="88">
+
 # Threads MCP
 
 [![npm](https://img.shields.io/npm/v/@thenavidm%2Fthreads-mcp?color=orange&label=npm)](https://www.npmjs.com/package/@thenavidm/threads-mcp)
