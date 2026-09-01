@@ -1,5 +1,10 @@
 # Threads MCP
 
+[![npm](https://img.shields.io/npm/v/@thenavidm%2Fthreads-mcp?color=orange&label=npm)](https://www.npmjs.com/package/@thenavidm/threads-mcp)
+[![Licence](https://img.shields.io/badge/licence-MIT-green)](./LICENSE)
+[![YouTube](https://img.shields.io/badge/YouTube-@thenavidm-red?logo=youtube&logoColor=white)](https://youtube.com/@thenavidm?sub_confirmation=1)
+[![X](https://img.shields.io/badge/X-@thenavidm-black?logo=x)](https://x.com/thenavidm)
+
 Give any AI agent full control of your Threads profile. Post, run threads, publish carousels, triage replies, read your insights, and search the network, from Claude, Cursor, or any MCP client.
 
 30 tools. One command to authorise, and the 60-day token refreshes itself from then on.
@@ -41,7 +46,6 @@ Claude: Reading every reply across your posts for the last 7 days. 168 replies,
 | 11 | [Your data](#11-your-data) | What is stored and where |
 | 12 | [Risks](#12-risks) | Read this before you install |
 | 13 | [Troubleshooting](#13-troubleshooting) | When something breaks |
-| 14 | [Build from source](#14-build-from-source) | Contributing |
 
 ---
 
@@ -696,25 +700,6 @@ Server not appearing at all: run the command your client runs, by hand, and read
 
 ---
 
-## 14. Build from source
-
-```bash
-git clone https://github.com/navidmoazzez/threads-mcp.git
-cd threads-mcp
-npm install
-npm run build
-npm test
-```
-
-Then point your client at `node /absolute/path/to/threads-mcp/dist/index.js`.
-
-```bash
-npm run typecheck   # tsc --noEmit
-npm run dev         # tsc --watch
-npm test            # vitest, 57 tests
-```
-
-Pull requests welcome. A change to text measurement, the container state machine or the output format needs a test.
 
 ---
 
@@ -747,6 +732,124 @@ Pull requests welcome. A change to text measurement, the container state machine
 ## Versions
 
 See [VERSIONS.md](VERSIONS.md).
+
+---
+
+## FAQ ❓
+
+<details>
+<summary><b>What is an MCP server?</b></summary>
+
+An MCP server is a standard way to give an AI assistant real access to a tool,
+so it can act rather than guess. You install it once, your assistant gains the
+tools, and it works in Claude, Cursor, ChatGPT and anything else that speaks the
+protocol.
+
+</details>
+
+<details>
+<summary><b>What is Threads?</b></summary>
+
+Threads is Meta's text-first social app, tied to an Instagram account. Its API
+is separate from Instagram's, with its own permissions and its own token, so a
+token that works for Instagram does nothing here.
+
+</details>
+
+<details>
+<summary><b>Do I need a Meta developer app?</b></summary>
+
+You need one, and it is free. Threads authorises through Meta's app system, so
+you tick the Threads use case when creating the app. The same app can carry
+Instagram as well, with one app id and one testers list, though each product
+issues its own token.
+
+</details>
+
+<details>
+<summary><b>Do I need an Instagram account?</b></summary>
+
+Your Threads profile is tied to an Instagram account, so yes in that sense. You
+do not need the Instagram API or its permissions to use this server.
+
+</details>
+
+<details>
+<summary><b>Is my data sent anywhere? Who can see it?</b></summary>
+
+Nothing leaves your machine except calls to Meta. There is no backend here, no
+account to create and no telemetry. Your token sits in your client's config.
+
+</details>
+
+<details>
+<summary><b>Can it post without me asking?</b></summary>
+
+It posts when you ask it to. Publishing and deleting require the model to pass
+`confirm: true`, which it sets after reading a description explaining what
+cannot be undone. Hiding a reply is not guarded, because it is one click to undo.
+
+Setting `THREADS_READ_ONLY=1` removes every write tool from the list, so the
+model cannot see or call them.
+
+</details>
+
+<details>
+<summary><b>Why did a tool fail with a permissions error?</b></summary>
+
+A missing OAuth scope and an App Review that has not been granted look identical
+from a tool call, which is why `doctor` exists: it probes each capability and
+names which scope is missing rather than leaving you to guess.
+
+</details>
+
+<details>
+<summary><b>Can it read anyone's Threads posts?</b></summary>
+
+It reads your own profile and its replies. Meta's API does not expose other
+people's posts the way a public search would, so competitor research is not
+something this can do honestly.
+
+</details>
+
+<details>
+<summary><b>Does it cost anything?</b></summary>
+
+It costs nothing. The server is MIT licensed and Meta's API is free at the
+volumes a person generates.
+
+</details>
+
+<details>
+<summary><b>Does it work with ChatGPT and Cursor, or only Claude?</b></summary>
+
+It works with any MCP client. Claude Code, Claude Desktop, Cursor, Windsurf, VS
+Code, Codex CLI and Gemini CLI all run it the same way.
+
+</details>
+
+<details>
+<summary><b>What happens when my token expires?</b></summary>
+
+Long-lived tokens last 60 days and can be refreshed before they lapse.
+`doctor` reports how long each one has left, so this is visible before it breaks
+rather than after.
+
+</details>
+
+<details>
+<summary><b>How do I disconnect it?</b></summary>
+
+Remove the app's access from your Threads or Instagram settings, which
+invalidates the token immediately, then remove the server from your client's
+config.
+
+</details>
+
+
+## Questions
+
+Run into a problem or have a question? [Open an issue](https://github.com/navidmoazzez/threads-mcp/issues) and I will help.
 
 ## About the author
 
