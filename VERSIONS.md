@@ -74,7 +74,7 @@ detect that case and say so.
 ### Output is a tenth the size
 
 Listings render as tagged text rather than Graph API JSON. Timestamps are
-normalised from Meta's `+0000` offset format to ISO-8601 UTC so they compare,
+normalized from Meta's `+0000` offset format to ISO-8601 UTC so they compare,
 every attribute is escaped, quoted and reposted posts nest rather than
 flattening, and hidden replies render as hidden so a gap in a conversation is
 visible instead of implied.

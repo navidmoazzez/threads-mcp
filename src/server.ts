@@ -64,7 +64,7 @@ export function buildServer(config: Config = loadConfig()): BuiltServer {
 /**
  * Resources: the context a model needs about Threads itself.
  *
- * Trimmed to what actually changes behaviour. A model that knows a post cannot
+ * Trimmed to what actually changes behavior. A model that knows a post cannot
  * be edited writes more carefully before it posts.
  */
 function registerResources(server: McpServer, config: Config): void {

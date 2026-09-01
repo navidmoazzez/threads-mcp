@@ -14,7 +14,7 @@ const post = {
 describe("rendering a post", () => {
   it("normalises the offset timestamp Threads returns into ISO UTC", () => {
     // Threads answers with +0000 rather than Z. Two posts have to compare, so
-    // everything is normalised through Date.
+    // everything is normalized through Date.
     expect(renderPost(post)).toContain('posted_at="2026-08-31T09:14:02.000Z"');
   });
 

@@ -1,7 +1,7 @@
 {
   "name": "@thenavidm/threads-mcp",
   "version": "1.0.0",
-  "description": "MCP server for Threads. 30 tools for posting, chained threads, carousels, replies and reply approvals, insights, keyword search and profile discovery, with LLM-optimised output. One-command OAuth with automatic 60-day token refresh. Works with Claude Code, Claude Desktop, Cursor, Windsurf, and any MCP-compatible client.",
+  "description": "Threads MCP server for Claude Code and AI agents. 30 tools for posting, chained threads, carousels, replies and reply approvals, insights, keyword search and profile discovery.",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {

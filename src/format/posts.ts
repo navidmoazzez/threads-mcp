@@ -12,7 +12,7 @@
  *
  *   - **Timestamps are ISO-8601 UTC.** Threads returns an offset format
  *     (`2026-08-31T09:14:02+0000`) that `new Date()` parses but that two
- *     different posts can express differently. Normalised, so they compare.
+ *     different posts can express differently. Normalized, so they compare.
  *   - **Every attribute is escaped.** A display name containing a quote must
  *     not be able to produce malformed output, or worse, close a tag.
  *   - **One renderer.** Posts, replies, quoted posts and search results all go

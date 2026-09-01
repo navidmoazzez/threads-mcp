@@ -1,7 +1,7 @@
 # Threads MCP
 
 [![npm](https://img.shields.io/npm/v/@thenavidm%2Fthreads-mcp?color=orange&label=npm)](https://www.npmjs.com/package/@thenavidm/threads-mcp)
-[![Licence](https://img.shields.io/badge/licence-MIT-green)](./LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 [![YouTube](https://img.shields.io/badge/YouTube-@thenavidm-red?logo=youtube&logoColor=white)](https://youtube.com/@thenavidm?sub_confirmation=1)
 [![X](https://img.shields.io/badge/X-@thenavidm-black?logo=x)](https://x.com/thenavidm)
 
@@ -515,7 +515,7 @@ The post text, exactly as published.
 </posts>
 ```
 
-- `posted_at` is always ISO-8601 UTC. Threads answers with a `+0000` offset format, normalised here so two timestamps compare.
+- `posted_at` is always ISO-8601 UTC. Threads answers with a `+0000` offset format, normalized here so two timestamps compare.
 - `type` is one or more of `standalone`, `reply`, `quote`, `repost`.
 - `replied_to` and `root_post` carry thread structure without reordering the list.
 - A quoted or reposted post nests as `<quoted_post>` or `<reposted_post>`, rather than being flattened. A repost with no text of its own is otherwise indistinguishable from an empty post.
@@ -885,7 +885,7 @@ Navid Moazzez is a leading AI business strategist, and the host of the AI Creato
 
 ## Dependencies
 
-| Library | Licence | What it does |
+| Library | License | What it does |
 |---|---|---|
 | [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) | MIT | The MCP server and transports |
 | [zod](https://github.com/colinhacks/zod) | MIT | Tool argument schemas and validation |
