@@ -699,7 +699,7 @@ Server not appearing at all: run the command your client runs, by hand, and read
 ## 14. Build from source
 
 ```bash
-git clone https://github.com/thenavidm/threads-mcp.git
+git clone https://github.com/navidmoazzez/threads-mcp.git
 cd threads-mcp
 npm install
 npm run build
@@ -750,13 +750,11 @@ See [VERSIONS.md](VERSIONS.md).
 
 ## About the author
 
-Navid Moazzez is a leading AI business strategist and the host of the [AI Creator Summit](https://summits.navid.me/ai-creator), watched by 100,000+ creators. He helps creators and founders master AI and build their own AI Operating System (AI OS) to automate their business and life. This Threads MCP server is one piece of that system.
+Navid Moazzez is a leading AI business strategist, and the host of the AI Creator Summit, watched by 100,000+ creators. He helps creators and founders master AI and build their own AI Operating System (AI OS) to automate their business and life. This Threads MCP server is one piece of that system.
 
 **Links**
 
 - Personal website: [navid.me](https://navid.me)
-- Store: [navid.bio](https://navid.bio)
-- AI Creator Summit: [summits.navid.me/ai-creator](https://summits.navid.me/ai-creator)
 - YouTube: [@thenavidm](https://youtube.com/@thenavidm?sub_confirmation=1) and [@thenavidai](https://youtube.com/@thenavidai?sub_confirmation=1)
 - X: [@thenavidm](https://x.com/thenavidm)
 - Instagram: [@thenavidm](https://instagram.com/thenavidm)

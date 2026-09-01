@@ -6,7 +6,7 @@
 # pointed at an absolute path.
 set -euo pipefail
 
-REPO="${THREADS_MCP_REPO:-https://github.com/thenavidm/threads-mcp.git}"
+REPO="${THREADS_MCP_REPO:-https://github.com/navidmoazzez/threads-mcp.git}"
 DIR="${THREADS_MCP_DIR:-$HOME/.local/share/threads-mcp}"
 
 need() {

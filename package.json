@@ -33,10 +33,10 @@
   "homepage": "https://navid.me",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thenavidm/threads-mcp.git"
+    "url": "git+https://github.com/navidmoazzez/threads-mcp.git"
   },
   "bugs": {
-    "url": "https://github.com/thenavidm/threads-mcp/issues"
+    "url": "https://github.com/navidmoazzez/threads-mcp/issues"
   },
   "keywords": [
     "mcp",

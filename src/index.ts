@@ -46,7 +46,7 @@ Options:
   THREADS_AUDIT_LOG                 append-only log of every attempted write
   THREADS_HTTP_PORT / _HOST / _TOKEN  for --http
 
-https://github.com/thenavidm/threads-mcp
+https://github.com/navidmoazzez/threads-mcp
 `;
 
 async function main(): Promise<void> {
