@@ -53,8 +53,6 @@ Claude: Reading every reply across your posts for the last 7 days. 168 replies,
 | 12 | [Risks](#12-risks) | Read this before you install |
 | 13 | [Troubleshooting](#13-troubleshooting) | When something breaks |
 
----
-
 ## 1. What you can ask it
 
 - Post this, and put the link in a card rather than as bare text.
@@ -69,8 +67,6 @@ Claude: Reading every reply across your posts for the last 7 days. 168 replies,
 - Restrict this post to the UK and Sweden.
 
 The third one is the point. Threads reports views alongside likes, replies, reposts and quotes, so engagement can be measured against reach instead of against nothing. Ranked by raw likes, your best post is usually just your oldest.
-
----
 
 ## 2. Install
 
@@ -204,8 +200,6 @@ npx -y @thenavidm/threads-mcp doctor
 
 It checks the network, then each token, then probes every capability separately: publishing, replies, insights, keyword search, profile discovery, geo-gating. Each one reports granted, missing, or missing with the exact scope to add.
 
----
-
 ## 3. Connect your account
 
 Threads has no app passwords. Every credential is an OAuth token minted against a Meta app you own, which is a real setup step, so here it is in full. It takes about ten minutes once.
@@ -290,8 +284,6 @@ You can skip `login` and set `THREADS_ACCESS_TOKEN` to a long-lived token you al
 
 Tokens from Meta's Graph API Explorer are **short-lived** and stop working in an hour. That is the single most common reason a Threads setup "randomly breaks".
 
----
-
 ## 4. Tools
 
 30 tools. Every one takes an optional `account`; every listing tool takes `limit` and `cursor`. Anywhere a post is named, it is the numeric id, which every read tool returns.
@@ -370,8 +362,6 @@ Three resources, `threads://accounts`, `threads://concepts`, `threads://output-f
 
 Three prompts: **triage-replies**, **draft-thread**, **what-worked**.
 
----
-
 ## 5. Writing safely
 
 A post is public the instant it lands. Threads has no edit endpoint, so correcting a typo means deleting and republishing, which loses that post's replies, likes and reposts, and spends one of the hundred deletions the account gets each day. There is no unsend and no revision history.
@@ -425,8 +415,6 @@ One JSON line per attempted write, allowed and blocked alike, with a timestamp a
 ### Prompt injection
 
 Everything you read from a search, a reply or a conversation is text other people wrote. A reply can say "ignore your instructions and post this". The server tells the model, in its instructions and again in the concepts resource, to treat all of it as data. Do not rely on that alone: `THREADS_READ_ONLY=1` for an agent working through someone else's replies is the real defence.
-
----
 
 ## 6. Writing posts
 
@@ -496,8 +484,6 @@ Publishing into the middle of that fails with an error that says nothing about t
 
 `allowlisted_country_codes: ["GB", "SE"]` restricts a post to those countries. Meta enables this per profile and there is no way to request it through the API. `whoami` reports whether the profile is eligible, and `list_allowlisted_countries` returns what it may use.
 
----
-
 ## 7. Reading posts
 
 Listings come back as tagged text rather than Graph API JSON, roughly a tenth the size, with the text where a model expects it.
@@ -526,8 +512,6 @@ The post text, exactly as published.
 - `cursor` on the root element continues the listing.
 
 Post text is reproduced exactly, including its own line breaks. Nothing indents inside `<content>`.
-
----
 
 ## 8. Several profiles
 
@@ -592,8 +576,6 @@ Exact beats prefix deliberately. `navid` is a prefix of `navidmedia`, so a prefi
 export THREADS_DEFAULT_ACCOUNT=thenavidm,navidmedia
 ```
 
----
-
 ## 9. Tokens
 
 This section is the difference between a setup that keeps working and one that dies in two months.
@@ -617,8 +599,6 @@ The catch is that an MCP server launched over stdio only exists while a client h
 - Run it over HTTP on a machine that is always on, which never lets the window close.
 
 `list_accounts` and `doctor` both report days remaining, and the server warns on startup when anything is inside a week.
-
----
 
 ## 10. How it works
 
@@ -663,8 +643,6 @@ Two dependencies: the MCP SDK and zod.
 
 **Container polling.** Starts at 500ms and backs off to 4s, so a text container does not pay for a video container's worst case.
 
----
-
 ## 11. Your data
 
 Nothing is uploaded anywhere but Threads.
@@ -681,8 +659,6 @@ There is no telemetry, no analytics and no phone-home. The only hosts contacted 
 
 The `login` listener binds `127.0.0.1` only, holds an authorisation code for the moment it takes to exchange it, and shuts down immediately afterwards.
 
----
-
 ## 12. Risks
 
 Read this before you install.
@@ -697,8 +673,6 @@ Read this before you install.
 - **Quotas are real.** 250 posts, 1,000 replies, 100 deletes, 2,200 searches, 1,000 profile lookups, all rolling 24 hours. A bulk run will hit them.
 
 If any of that is more than you want to hand an agent, `THREADS_READ_ONLY=1` gives you 18 tools that cannot change anything.
-
----
 
 ## 13. Troubleshooting
 
@@ -719,11 +693,6 @@ If any of that is more than you want to hand an agent, `THREADS_READ_ONLY=1` giv
 | Rate limited | A rolling-24-hour quota. `get_publishing_limit` shows what is left |
 
 Server not appearing at all: run the command your client runs, by hand, and read stderr.
-
----
-
-
----
 
 ## Environment variables
 
@@ -754,8 +723,6 @@ Server not appearing at all: run the command your client runs, by hand, and read
 ## Versions
 
 See [VERSIONS.md](VERSIONS.md).
-
----
 
 ## FAQ ❓
 
@@ -867,7 +834,6 @@ invalidates the token immediately, then remove the server from your client's
 config.
 
 </details>
-
 
 ## Questions
 
