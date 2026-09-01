@@ -5,11 +5,15 @@
 [![YouTube](https://img.shields.io/badge/YouTube-@thenavidm-red?logo=youtube&logoColor=white)](https://youtube.com/@thenavidm?sub_confirmation=1)
 [![X](https://img.shields.io/badge/X-@thenavidm-black?logo=x)](https://x.com/thenavidm)
 
-Give any AI agent full control of your Threads profile. Post, run threads, publish carousels, triage replies, read your insights, and search the network, from Claude, Cursor, or any MCP client.
+Give any AI agent full control of your Threads profile. Threads has its own API, separate from Instagram's, so it needs its own token.
+
+One Meta app can carry both, with one app id and one testers list.
+
+Publishing and deleting ask for confirmation. Everything else is a read.
 
 30 tools. One command to authorise, and the 60-day token refreshes itself from then on.
 
-Built by [Navid Moazzez](https://navid.me).
+Built and maintained by [Navid Moazzez](https://navid.me).
 
 ```
 You: what did people actually reply to me about this week, and what needs an answer?
