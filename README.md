@@ -210,6 +210,22 @@ Threads has no app passwords. Every credential is an OAuth token minted against 
 
 ### Create the app
 
+> [!TIP]
+> **One app covers Facebook, Instagram and Threads.**
+>
+> Use cases are ticked in a list, and you can tick several. If you plan to
+> use more than one of these, do it now rather than making three apps and
+> managing three sets of credentials.
+>
+> | Use case | For | Server |
+> |---|---|---|
+> | Manage everything on your Page | Facebook Pages | [facebook-mcp](https://github.com/navidmoazzez/facebook-mcp) |
+> | Manage messaging and content on Instagram | Instagram | [instagram-mcp](https://github.com/navidmoazzez/instagram-mcp) |
+> | Access Threads API | Threads | this one |
+>
+> Incompatible combinations grey out. If an option will not tick, it
+> conflicts with something already selected.
+
 1. Go to [developers.facebook.com/apps](https://developers.facebook.com/apps) and **Create App**.
 2. Choose the **Threads API** use case.
 3. In the app, open **Threads API**, then **Settings**. Copy the **Threads App ID** and **Threads App Secret**.
