@@ -1,4 +1,4 @@
-# Threads MCP Versions
+# Threads MCP changelog
 
 | Component | Version | Last Updated |
 |-----------|---------|--------------|

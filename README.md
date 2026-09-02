@@ -723,7 +723,7 @@ Server not appearing at all: run the command your client runs, by hand, and read
 
 ## Versions
 
-See [VERSIONS.md](VERSIONS.md).
+See [CHANGELOG.md](CHANGELOG.md).
 
 ## FAQ ❓
 
