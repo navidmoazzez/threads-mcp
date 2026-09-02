@@ -18,23 +18,7 @@ Publishing and deleting ask for confirmation. Everything else is a read.
 
 Built and maintained by [Navid Moazzez](https://navid.me?utm_source=github&utm_medium=readme&utm_campaign=threads-mcp).
 
-```
-You: what did people actually reply to me about this week, and what needs an answer?
-
-Claude: Reading every reply across your posts for the last 7 days. 168 replies,
-        four worth your time.
-
-  1. Three people asking the same thing on Tuesday's post: whether the
-     workflow survives a token expiring. It does; nobody has said so.
-     That is a post, not three replies.
-  2. One substantive disagreement on the carousel, from someone with
-     40k followers. They are half right. Draft below.
-  3. Two support questions you can answer in a line each.
-  4. Everything else is praise or noise.
-
-  Also: your Tuesday post has 4.1% engagement against 22k views, which is
-  triple your median. It opened with a number instead of a question.
-```
+<img src="https://cdn.navid.media/repos/threads-mcp.gif?v=1" alt="Claude Code using the Threads MCP server" width="520">
 
 ## Contents
 
