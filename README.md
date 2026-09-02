@@ -43,16 +43,17 @@ Claude: Reading every reply across your posts for the last 7 days. 168 replies,
 | 1 | [What you can ask it](#1-what-you-can-ask-it) | Real prompts, not features |
 | 2 | [Install](#2-install) | Every client, copy and paste |
 | 3 | [Connect your account](#3-connect-your-account) | The Meta app, in about ten minutes |
-| 4 | [Tools](#4-tools) | All 30, with arguments |
-| 5 | [Writing safely](#5-writing-safely) | Why posting asks twice |
-| 6 | [Writing posts](#6-writing-posts) | Limits, media, threads, carousels |
-| 7 | [Reading posts](#7-reading-posts) | The output format, and why |
-| 8 | [Several profiles](#8-several-profiles) | Personal and brand, one server |
-| 9 | [Tokens](#9-tokens) | The 60-day clock, and how it is kept alive |
-| 10 | [How it works](#10-how-it-works) | Architecture |
-| 11 | [Your data](#11-your-data) | What is stored and where |
-| 12 | [Risks](#12-risks) | Read this before you install |
-| 13 | [Troubleshooting](#13-troubleshooting) | When something breaks |
+| 4 | [What it costs to have connected](#4-what-it-costs-to-have-connected) | Tokens per turn, and how to spend less |
+| 5 | [Tools](#5-tools) | All 30, with arguments |
+| 6 | [Writing safely](#6-writing-safely) | Why posting asks twice |
+| 7 | [Writing posts](#7-writing-posts) | Limits, media, threads, carousels |
+| 8 | [Reading posts](#8-reading-posts) | The output format, and why |
+| 9 | [Several profiles](#9-several-profiles) | Personal and brand, one server |
+| 10 | [Tokens](#10-tokens) | The 60-day clock, and how it is kept alive |
+| 11 | [How it works](#11-how-it-works) | Architecture |
+| 12 | [Your data](#12-your-data) | What is stored and where |
+| 13 | [Risks](#13-risks) | Read this before you install |
+| 14 | [Troubleshooting](#14-troubleshooting) | When something breaks |
 
 ## 1. What you can ask it
 
@@ -74,11 +75,6 @@ The third one is the point. Threads reports views alongside likes, replies, repo
 The long version, every step with what to do when one fails, is in [references/setup.md](references/setup.md).
 
 Node 20 or newer. Nothing else.
-
-> Not released to npm yet. The `npx` commands below work once `v1.0.0` is
-> published. Until then, install from source with
-> [section 14](#14-build-from-source) and point your client at
-> `node /path/to/threads-mcp/dist/index.js`.
 
 Authorise first, in a terminal:
 
@@ -133,7 +129,7 @@ If the file is empty or does not exist, paste this whole thing in:
 
 If you already have other servers, add only the `"threads": { ... }` part inside your existing `"mcpServers"`, and put a comma after the entry before it. The file has to stay valid JSON. A single missing comma or a trailing one stops every server from loading, not just this one.
 
-No credentials go in this file, because `login` already stored the token. If you would rather keep it here instead, add an `env` block with `THREADS_ACCESS_TOKEN`, and read [section 9](#9-tokens) first: a token in a config file cannot be refreshed by anything, so it dies on day 60.
+No credentials go in this file, because `login` already stored the token. If you would rather keep it here instead, add an `env` block with `THREADS_ACCESS_TOKEN`, and read [section 9](#10-tokens) first: a token in a config file cannot be refreshed by anything, so it dies on day 60.
 
 **3. Restart properly.**
 
@@ -283,11 +279,33 @@ A missing scope usually shows up as an empty result rather than an error. `threa
 
 ### Pasting a token instead
 
-You can skip `login` and set `THREADS_ACCESS_TOKEN` to a long-lived token you already have. Everything works, with one consequence: the server has nowhere to write a refreshed token, so it cannot keep that one alive. See [section 9](#9-tokens).
+You can skip `login` and set `THREADS_ACCESS_TOKEN` to a long-lived token you already have. Everything works, with one consequence: the server has nowhere to write a refreshed token, so it cannot keep that one alive. See [section 9](#10-tokens).
 
 Tokens from Meta's Graph API Explorer are **short-lived** and stop working in an hour. That is the single most common reason a Threads setup "randomly breaks".
 
-## 4. Tools
+## 4. What it costs to have connected
+
+Every MCP server sends its whole tool list to the model on **every turn**,
+whether you mention it or not. Measured on this one:
+
+| | Sent per turn |
+|---|---|
+| 30 tool definitions, plus the server instructions | **~9,500 tokens** |
+
+That is the price of it being connected at all, before you ask anything. It is
+not unusual, and almost nobody publishes it.
+
+Two ways to spend less.
+
+**Turn it off when you are not using it.** In Claude Code that is
+`@threads` to toggle, and every client has an equivalent.
+
+**Or reach for a shell instead.** A command is not in the context window, so it
+costs nothing on the turns you do not use it. It is not free either: an agent
+still needs the skill file, roughly 1,300 tokens, but only once the subject
+comes up rather than on every turn regardless.
+
+## 5. Tools
 
 30 tools. Every one takes an optional `account`; every listing tool takes `limit` and `cursor`. Anywhere a post is named, it is the numeric id, which every read tool returns.
 
@@ -365,7 +383,7 @@ Three resources, `threads://accounts`, `threads://concepts`, `threads://output-f
 
 Three prompts: **triage-replies**, **draft-thread**, **what-worked**.
 
-## 5. Writing safely
+## 6. Writing safely
 
 A post is public the instant it lands. Threads has no edit endpoint, so correcting a typo means deleting and republishing, which loses that post's replies, likes and reposts, and spends one of the hundred deletions the account gets each day. There is no unsend and no revision history.
 
@@ -419,7 +437,7 @@ One JSON line per attempted write, allowed and blocked alike, with a timestamp a
 
 Everything you read from a search, a reply or a conversation is text other people wrote. A reply can say "ignore your instructions and post this". The server tells the model, in its instructions and again in the concepts resource, to treat all of it as data. Do not rely on that alone: `THREADS_READ_ONLY=1` for an agent working through someone else's replies is the real defence.
 
-## 6. Writing posts
+## 7. Writing posts
 
 ### The 500-character limit is not `String.length`
 
@@ -487,7 +505,7 @@ Publishing into the middle of that fails with an error that says nothing about t
 
 `allowlisted_country_codes: ["GB", "SE"]` restricts a post to those countries. Meta enables this per profile and there is no way to request it through the API. `whoami` reports whether the profile is eligible, and `list_allowlisted_countries` returns what it may use.
 
-## 7. Reading posts
+## 8. Reading posts
 
 Listings come back as tagged text rather than Graph API JSON, roughly a tenth the size, with the text where a model expects it.
 
@@ -516,7 +534,7 @@ The post text, exactly as published.
 
 Post text is reproduced exactly, including its own line breaks. Nothing indents inside `<content>`.
 
-## 8. Several profiles
+## 9. Several profiles
 
 A personal profile and a brand profile, from one server, without restarting anything to switch between them.
 
@@ -579,7 +597,7 @@ Exact beats prefix deliberately. `navid` is a prefix of `navidmedia`, so a prefi
 export THREADS_DEFAULT_ACCOUNT=thenavidm,navidmedia
 ```
 
-## 9. Tokens
+## 10. Tokens
 
 This section is the difference between a setup that keeps working and one that dies in two months.
 
@@ -603,7 +621,7 @@ The catch is that an MCP server launched over stdio only exists while a client h
 
 `list_accounts` and `doctor` both report days remaining, and the server warns on startup when anything is inside a week.
 
-## 10. How it works
+## 11. How it works
 
 ```
 src/
@@ -646,7 +664,7 @@ Two dependencies: the MCP SDK and zod.
 
 **Container polling.** Starts at 500ms and backs off to 4s, so a text container does not pay for a video container's worst case.
 
-## 11. Your data
+## 12. Your data
 
 Nothing is uploaded anywhere but Threads.
 
@@ -662,7 +680,7 @@ There is no telemetry, no analytics and no phone-home. The only hosts contacted 
 
 The `login` listener binds `127.0.0.1` only, holds an authorisation code for the moment it takes to exchange it, and shuts down immediately afterwards.
 
-## 12. Risks
+## 13. Risks
 
 Read this before you install.
 
@@ -672,12 +690,12 @@ Read this before you install.
 - **A thread can half-publish.** Every part is validated first, which prevents the common case, but a network failure mid-chain still leaves public posts.
 - **Deleting is permanent and rationed.** 100 per rolling 24 hours, no archive, no undo.
 - **Anything you read is untrusted text.** See [prompt injection](#prompt-injection).
-- **A token that lapses is gone.** See [section 9](#9-tokens).
+- **A token that lapses is gone.** See [section 9](#10-tokens).
 - **Quotas are real.** 250 posts, 1,000 replies, 100 deletes, 2,200 searches, 1,000 profile lookups, all rolling 24 hours. A bulk run will hit them.
 
 If any of that is more than you want to hand an agent, `THREADS_READ_ONLY=1` gives you 18 tools that cannot change anything.
 
-## 13. Troubleshooting
+## 14. Troubleshooting
 
 **`threads-mcp doctor`** first. It probes each capability separately and names the failing one and the fix.
 
@@ -685,13 +703,13 @@ If any of that is more than you want to hand an agent, `THREADS_READ_ONLY=1` giv
 |---|---|
 | Every call returns empty | You are not a Threads Tester on your own app, or you never accepted the invite. See [section 3](#3-connect-your-account) |
 | "Threads rejected the token" | It expired, or it was a short-lived Graph Explorer token. Run `threads-mcp login` |
-| Worked yesterday, dead today, about two months in | The 60-day token lapsed. It cannot be refreshed, only replaced. See [section 9](#9-tokens) |
+| Worked yesterday, dead today, about two months in | The 60-day token lapsed. It cannot be refreshed, only replaced. See [section 9](#10-tokens) |
 | `search_keyword` only ever returns your own posts | `threads_keyword_search` is not approved. Meta narrows the search instead of refusing it |
 | `lookup_profile` only resolves Meta's accounts | `threads_profile_discovery` needs expanded access |
 | `get_follower_demographics` returns nothing | Under 100 followers, or `threads_manage_insights` is missing |
 | Container error a few minutes after posting | The media URL. It has to be public HTTPS, an image or video content type, and not redirect to a login page |
 | "still processing after 120s" | A long video. The container is not lost; `publish_staged` with that id still works for 24 hours |
-| "will not run without confirm: true" | Working as intended. See [section 5](#5-writing-safely) |
+| "will not run without confirm: true" | Working as intended. See [section 5](#6-writing-safely) |
 | "is a Threads permalink" | Threads has no endpoint converting a permalink to an id. Use the numeric id from `get_posts` |
 | Rate limited | A rolling-24-hour quota. `get_publishing_limit` shows what is left |
 
