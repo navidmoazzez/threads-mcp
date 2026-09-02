@@ -18,7 +18,7 @@ Publishing and deleting ask for confirmation. Everything else is a read.
 
 Built and maintained by [Navid Moazzez](https://navid.me?utm_source=github&utm_medium=readme&utm_campaign=threads-mcp).
 
-<img src="https://cdn.navid.media/repos/threads-mcp.gif?v=1" alt="Claude Code using the Threads MCP server" width="520">
+<img src="https://cdn.navid.media/repos/threads-mcp.gif?v=2" alt="Claude Code using the Threads MCP server" width="520">
 
 ## Contents
 
