@@ -71,6 +71,8 @@ The third one is the point. Threads reports views alongside likes, replies, repo
 
 ## 2. Install
 
+The long version, every step with what to do when one fails, is in [references/setup.md](references/setup.md).
+
 Node 20 or newer. Nothing else.
 
 > Not released to npm yet. The `npx` commands below work once `v1.0.0` is
