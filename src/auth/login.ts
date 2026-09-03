@@ -21,7 +21,7 @@
 import { createServer } from "node:http";
 import { spawn } from "node:child_process";
 import { createInterface } from "node:readline/promises";
-import { loadConfig, normalizeUsername, type Account } from "../config.js";
+import { loadConfig, normalizeUsername, numericFlag, type Account } from "../config.js";
 import { exchangeForLongLived, expiryFrom } from "./tokens.js";
 import { upsertToken } from "./store.js";
 import { ThreadsClient } from "../api/client.js";
@@ -146,10 +146,8 @@ export type LoginOptions = {
 };
 
 export function loginOptionsFrom(argv: string[]): LoginOptions {
-  const portFlag = argv.find((a) => a.startsWith("--port="));
-  const port = Number(portFlag?.split("=")[1] ?? 8788);
   return {
-    port: Number.isFinite(port) && port > 0 ? port : 8788,
+    port: numericFlag(argv, "port", 8788),
     scopes: argv.includes("--all-scopes") ? ALL_SCOPES : CORE_SCOPES,
     manual: argv.includes("--manual"),
   };

@@ -96,6 +96,24 @@ function normalizeHost(raw: string | undefined, fallback: string): string {
   return withScheme.replace(/\/+$/, "");
 }
 
+/**
+ * Read `--name=8787` or `--name 8787` off an argv, as a positive number.
+ *
+ * Both spellings, because accepting only the equals form meant the space form
+ * fell through to the fallback with no complaint, which looks exactly like the
+ * flag being ignored. Anything that is not a positive number falls back too,
+ * so a typo cannot bind a port of NaN.
+ */
+export function numericFlag(argv: string[], name: string, fallback: number): number {
+  const at = argv.findIndex((a) => a === `--${name}` || a.startsWith(`--${name}=`));
+  if (at === -1) return fallback;
+  const token = argv[at] as string;
+  const raw = token.includes("=") ? token.slice(token.indexOf("=") + 1) : argv[at + 1];
+  if (raw === undefined || raw === "") return fallback;
+  const n = Number(raw);
+  return Number.isFinite(n) && n > 0 ? n : fallback;
+}
+
 function envFlag(name: string, fallback: boolean): boolean {
   const raw = process.env[name];
   if (raw === undefined || raw === "") return fallback;

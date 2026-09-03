@@ -2,7 +2,28 @@
 
 | Component | Version | Last Updated |
 |-----------|---------|--------------|
-| threads-mcp-cli | 1.1.0 | 2026-09-04 |
+| threads-mcp-cli | 1.1.1 | 2026-09-04 |
+
+---
+
+## 1.1.1
+
+`--port` only accepted `--port=8787`. Written the ordinary way, `--port 8787`
+fell through to the default and bound 8787 anyway, with nothing printed. A flag
+that is silently ignored is worse than one that errors: the server comes up, the
+port is wrong, and nothing says so.
+
+Both spellings now work, in both places that read the flag. The second was
+`login --port`, which INSTALL.md tells you to reach for when 8788 is already
+taken during setup — so the fault sat on the first command a new user types.
+
+One parser now serves both, with 13 tests covering the equals form, the space
+form, an absent flag, a trailing `--port` with nothing after it, a prefix that
+merely starts the same way, and a typo that used to be able to bind `NaN`.
+
+There is deliberately no `--host` flag. Binding a public interface takes
+`THREADS_HTTP_HOST`, an environment variable someone has to mean, rather than a
+word typed next to `--http`. A Threads token can post as you.
 
 ---
 

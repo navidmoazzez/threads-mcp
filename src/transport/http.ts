@@ -20,6 +20,7 @@ import { createServer, type IncomingMessage, type ServerResponse } from "node:ht
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import type { BuiltServer } from "../server.js";
 import { daysRemaining } from "../auth/tokens.js";
+import { numericFlag } from "../config.js";
 
 export type HttpOptions = {
   port: number;
@@ -29,10 +30,13 @@ export type HttpOptions = {
 };
 
 export function httpOptionsFromEnv(argv: string[] = []): HttpOptions {
-  const flag = argv.find((a) => a.startsWith("--port="));
-  const port = Number(flag?.split("=")[1] ?? process.env.THREADS_HTTP_PORT ?? 8787);
+  // `--port` beats THREADS_HTTP_PORT, which beats the default. Both spellings
+  // of the flag are accepted; see numericFlag for why that is worth saying.
+  const fromEnv = Number(process.env.THREADS_HTTP_PORT);
+  const fallback = Number.isFinite(fromEnv) && fromEnv > 0 ? fromEnv : 8787;
+  const port = numericFlag(argv, "port", fallback);
   return {
-    port: Number.isFinite(port) && port > 0 ? port : 8787,
+    port,
     host: process.env.THREADS_HTTP_HOST || "127.0.0.1",
     token: process.env.THREADS_HTTP_TOKEN || undefined,
   };
