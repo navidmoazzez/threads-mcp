@@ -2,7 +2,7 @@
 
 ## Reporting a vulnerability
 
-[Report it privately](https://github.com/navidmoazzez/threads-mcp/security/advisories/new).
+[Report it privately](https://github.com/thenavidm/threads-mcp-cli/security/advisories/new).
 Please do not open a public issue for a security problem: an issue is visible to
 everyone the moment you file it, including whoever would use the bug.
 

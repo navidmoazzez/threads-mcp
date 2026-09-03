@@ -7,6 +7,8 @@
  * `threads-mcp refresh`     extend every stored token now
  * `threads-mcp doctor`      check the setup and say what is wrong
  * `threads-mcp --http`      HTTP, for running it somewhere always on
+ *
+ * `threads-cli`             the same tools as shell commands
  */
 
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -15,6 +17,7 @@ import { loadConfig } from "./config.js";
 import { accountsFromStore } from "./auth/store.js";
 import { httpOptionsFromEnv, startHttpServer } from "./transport/http.js";
 import { daysRemaining } from "./auth/tokens.js";
+import { runCli, isCliCommand } from "./cli.js";
 
 const HELP = `threads-mcp ${VERSION}
 
@@ -25,10 +28,16 @@ const HELP = `threads-mcp ${VERSION}
   threads-mcp --http [--port=N]   Run over HTTP, for a machine that is always on.
   threads-mcp --version           Print the version.
 
+  threads-cli                     List every tool as a shell command.
+  threads-cli <command> --help    What one command takes.
+  threads-cli schema <command>    The JSON schema an MCP client sees.
+
 Credentials, in priority order:
   THREADS_ACCOUNTS          JSON array, for several profiles at once:
                             [{"access_token":"THQ...","username":"you"}]
   THREADS_ACCESS_TOKEN      a long-lived token for one profile
+  THREADS_USER_ID           numeric profile id. Resolved from the token when absent
+  THREADS_USERNAME          username, for matching and display. Also resolved
   the token store           written by \`login\`, and the only source this
                             server can keep refreshed on its own
 
@@ -40,18 +49,69 @@ Options:
   THREADS_DEFAULT_ACCOUNT           which username acts when a tool names none
   THREADS_READ_ONLY=1               hide every write from the tool list
   THREADS_ALLOW_DESTRUCTIVE=0       keep writes, block posting and deleting
+  THREADS_TOKEN_STORE               where tokens are kept, default ~/.threads-mcp/tokens.json
+  THREADS_PERSIST_TOKENS=0          stop writing refreshed tokens back to the store
   THREADS_REFRESH_WINDOW_DAYS       refresh this many days before expiry, default 20
   THREADS_CONTAINER_TIMEOUT_MS      how long to wait for media, default 120000
   THREADS_REQUEST_TIMEOUT_MS        per-request deadline, default 30000
+  THREADS_MIN_REQUEST_INTERVAL_MS   spacing between requests, default 120
+  THREADS_MAX_RETRIES               retries on 5xx and quota codes, default 3
   THREADS_AUDIT_LOG                 append-only log of every attempted write
+  THREADS_GRAPH_HOST                override the Graph host, default graph.threads.net
+  THREADS_USER_AGENT                override the User-Agent sent to Meta
   THREADS_HTTP_PORT / _HOST / _TOKEN  for --http
 
-https://github.com/navidmoazzez/threads-mcp
+https://github.com/thenavidm/threads-mcp-cli
 `;
+
+/**
+ * One entry point, two programs. `threads-mcp` is the server and must stay
+ * silent on stdout; `threads-cli` is the one a person types. Running the CLI
+ * binary with no arguments is someone asking what they can type, so it lists
+ * the commands rather than hanging on a transport that will never speak.
+ */
+function invokedAsCli(): boolean {
+  const name = (process.argv[1] ?? "").split("/").pop() ?? "";
+  return name.startsWith("threads-cli");
+}
 
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const command = argv[0];
+
+  if (invokedAsCli() && argv.length === 0) {
+    process.exitCode = await runCli(["tools"]);
+    return;
+  }
+
+  // Checked before --help and --version so `<tool> --help` reaches the tool.
+  // A bare `--help` starts with a dash, so it falls through to the block below.
+  if (isCliCommand(argv)) {
+    process.exitCode = await runCli(argv);
+    return;
+  }
+
+  // An unknown word used to fall through and start the server, which then sat
+  // waiting on stdin: a typo looked like a hang, and scripts saw exit code 0.
+  //
+  // `doctor`, `login` and `refresh` belong to the entry point rather than the
+  // tool list, and they are the first things someone types when nothing works.
+  // Rejecting them as unknown commands sent them to the server binary to
+  // diagnose the CLI.
+  const ENTRY_COMMANDS = new Set(["doctor", "login", "refresh", "help"]);
+
+  if (
+    invokedAsCli() &&
+    command !== undefined &&
+    !command.startsWith("-") &&
+    !ENTRY_COMMANDS.has(command)
+  ) {
+    process.stderr.write(
+      `${JSON.stringify({ error: `Unknown command '${command}'. Run \`threads-cli\` to list them.` }, null, 2)}\n`,
+    );
+    process.exitCode = 1;
+    return;
+  }
 
   if (argv.includes("--help") || argv.includes("-h") || command === "help") {
     process.stdout.write(HELP);

@@ -2,7 +2,7 @@
 
 # Threads MCP
 
-[![npm](https://img.shields.io/npm/v/@thenavidm%2Fthreads-mcp?color=orange&label=npm)](https://www.npmjs.com/package/@thenavidm/threads-mcp)
+[![npm](https://img.shields.io/npm/v/@thenavidm%2Fthreads-mcp-cli?color=orange&label=npm)](https://www.npmjs.com/package/@thenavidm/threads-mcp-cli)
 [![License](https://img.shields.io/badge/License-MIT-green)](./LICENSE)
 [![YouTube](https://img.shields.io/badge/YouTube-@thenavidm-red?logo=youtube&logoColor=white)](https://youtube.com/@thenavidm?sub_confirmation=1)
 [![X](https://img.shields.io/badge/X-@thenavidm-black?logo=x)](https://x.com/thenavidm)
@@ -16,7 +16,7 @@ Publishing and deleting ask for confirmation. Everything else is a read.
 
 30 tools. One command to authorise, and the 60-day token refreshes itself from then on.
 
-Built and maintained by [Navid Moazzez](https://navid.me?utm_source=github&utm_medium=readme&utm_campaign=threads-mcp).
+Built and maintained by [Navid Moazzez](https://navid.me?utm_source=github&utm_medium=readme&utm_campaign=threads-mcp-cli).
 
 <img src="https://cdn.navid.media/repos/threads-mcp.gif?v=2" alt="Claude Code using the Threads MCP server" width="520">
 
@@ -56,7 +56,7 @@ The third one is the point. Threads reports views alongside likes, replies, repo
 
 ## 2. Install
 
-The long version, every step with what to do when one fails, is in [references/setup.md](references/setup.md).
+The long version, every step with what to do when one fails, is in [INSTALL.md](INSTALL.md).
 
 Node 20 or newer. Nothing else.
 
@@ -65,7 +65,7 @@ Authorise first, in a terminal:
 ```bash
 export THREADS_APP_ID=...        # from your Meta app
 export THREADS_APP_SECRET=...
-npx -y @thenavidm/threads-mcp login
+npx -y @thenavidm/threads-mcp-cli login
 ```
 
 That stores a 60-day token at `~/.threads-mcp/tokens.json`, and every client below picks it up with no credentials in its config at all. [Section 3](#3-connect-your-account) covers where the app id and secret come from.
@@ -73,7 +73,7 @@ That stores a 60-day token at `~/.threads-mcp/tokens.json`, and every client bel
 ### Claude Code
 
 ```bash
-claude mcp add threads -- npx -y @thenavidm/threads-mcp
+claude mcp add threads -- npx -y @thenavidm/threads-mcp-cli
 ```
 
 ### Claude Desktop
@@ -105,7 +105,7 @@ If the file is empty or does not exist, paste this whole thing in:
   "mcpServers": {
     "threads": {
       "command": "npx",
-      "args": ["-y", "@thenavidm/threads-mcp"]
+      "args": ["-y", "@thenavidm/threads-mcp-cli"]
     }
   }
 }
@@ -178,7 +178,7 @@ Binds `127.0.0.1` by default. A Threads token can post as you, so put it behind 
 ### Check it worked
 
 ```bash
-npx -y @thenavidm/threads-mcp doctor
+npx -y @thenavidm/threads-mcp-cli doctor
 ```
 
 It checks the network, then each token, then probes every capability separately: publishing, replies, insights, keyword search, profile discovery, geo-gating. Each one reports granted, missing, or missing with the exact scope to add.
@@ -198,8 +198,8 @@ Threads has no app passwords. Every credential is an OAuth token minted against 
 >
 > | Use case | For | Server |
 > |---|---|---|
-> | Manage everything on your Page | Facebook Pages | [facebook-mcp](https://github.com/navidmoazzez/facebook-mcp) |
-> | Manage messaging and content on Instagram | Instagram | [instagram-mcp](https://github.com/navidmoazzez/instagram-mcp) |
+> | Manage everything on your Page | Facebook Pages | [facebook-mcp](https://github.com/thenavidm/facebook-mcp) |
+> | Manage messaging and content on Instagram | Instagram | [instagram-mcp](https://github.com/thenavidm/instagram-mcp) |
 > | Access Threads API | Threads | this one |
 >
 > Incompatible combinations grey out. If an option will not tick, it
@@ -543,7 +543,7 @@ In an MCP client config, that goes in `env` as a single JSON string:
   "mcpServers": {
     "threads": {
       "command": "npx",
-      "args": ["-y", "@thenavidm/threads-mcp"],
+      "args": ["-y", "@thenavidm/threads-mcp-cli"],
       "env": {
         "THREADS_ACCOUNTS": "[{\"access_token\":\"THQ...\",\"username\":\"thenavidm\"},{\"access_token\":\"THQ...\",\"username\":\"navidmedia\"}]",
         "THREADS_DEFAULT_ACCOUNT": "thenavidm"
@@ -721,6 +721,7 @@ Server not appearing at all: run the command your client runs, by hand, and read
 | `THREADS_MIN_REQUEST_INTERVAL_MS` | `120` | Spacing between requests |
 | `THREADS_MAX_RETRIES` | `3` | Retries on 5xx and transient errors |
 | `THREADS_GRAPH_HOST` | `https://graph.threads.net` | The Graph API host |
+| `THREADS_USER_AGENT` | `threads-mcp` | The User-Agent sent to Meta |
 | `THREADS_HTTP_PORT` | `8787` | For `--http` |
 | `THREADS_HTTP_HOST` | `127.0.0.1` | For `--http` |
 | `THREADS_HTTP_TOKEN` | none | Bearer token required by `--http` |
@@ -842,7 +843,7 @@ config.
 
 ## Questions
 
-Run into a problem or have a question? [Open an issue](https://github.com/navidmoazzez/threads-mcp/issues) and I will help.
+Run into a problem or have a question? [Open an issue](https://github.com/thenavidm/threads-mcp-cli/issues) and I will help.
 
 ## About the author
 
@@ -850,7 +851,7 @@ Navid Moazzez is a leading AI business strategist, and the host of the AI Creato
 
 **Links**
 
-- Personal website: [navid.me](https://navid.me?utm_source=github&utm_medium=readme&utm_campaign=threads-mcp)
+- Personal website: [navid.me](https://navid.me?utm_source=github&utm_medium=readme&utm_campaign=threads-mcp-cli)
 - YouTube: [@thenavidm](https://youtube.com/@thenavidm?sub_confirmation=1) and [@thenavidai](https://youtube.com/@thenavidai?sub_confirmation=1)
 - X: [@thenavidm](https://x.com/thenavidm)
 - Instagram: [@thenavidm](https://instagram.com/thenavidm)
@@ -873,4 +874,4 @@ Not affiliated with, endorsed by, or connected to Meta Platforms, Inc.
 
 ---
 
-© 2026 [NM Media](https://navid.media?utm_source=github&utm_medium=readme&utm_campaign=threads-mcp). Made with ❤️ by [Navid Moazzez](https://navid.me?utm_source=github&utm_medium=readme&utm_campaign=threads-mcp).
+© 2026 [NM Media](https://navid.media?utm_source=github&utm_medium=readme&utm_campaign=threads-mcp-cli). Made with ❤️ by [Navid Moazzez](https://navid.me?utm_source=github&utm_medium=readme&utm_campaign=threads-mcp-cli).

@@ -32,11 +32,21 @@ export type Risk =
   /** Public the moment it runs, or cannot be undone. */
   | "destructive";
 
+/** Which surface a guard is protecting, so refusals name the right syntax. */
+export type Surface = "mcp" | "cli";
+
 export class WriteGuard {
   private readonly config: Config;
+  private readonly surface: Surface;
 
-  constructor(config: Config) {
+  constructor(config: Config, surface: Surface = "mcp") {
     this.config = config;
+    this.surface = surface;
+  }
+
+  /** `--confirm` in a terminal, `confirm: true` in a tool call. */
+  private get confirmFlag(): string {
+    return this.surface === "cli" ? "--confirm" : "confirm: true";
   }
 
   get readOnly(): boolean {
@@ -63,7 +73,7 @@ export class WriteGuard {
       if (confirm !== true) {
         this.audit(tool, summary, "blocked: no confirm");
         throw new WriteBlockedError(
-          `${tool} is public or irreversible, so it will not run without confirm: true. About to: ${summary}. Call again with confirm: true if that is what was asked for.`,
+          `${tool} is public or irreversible, so it will not run without ${this.confirmFlag}. About to: ${summary}. Call again with ${this.confirmFlag} if that is what was asked for.`,
         );
       }
     }

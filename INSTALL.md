@@ -1,4 +1,4 @@
-# Threads MCP setup
+# Install
 
 Threads has no app passwords and no personal access tokens. Every credential is
 an OAuth token minted against a Meta app you create yourself. That is a real
