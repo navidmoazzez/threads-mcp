@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install threads-mcp from source and register it with Claude Code.
+# Install threads-mcp-cli from source and register it with Claude Code.
 #
 # For the npm route, or any other client, see the README. This exists for the
 # case the README cannot cover in one paste: a clone, a build, and a client

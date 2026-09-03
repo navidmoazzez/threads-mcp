@@ -1,8 +1,56 @@
-# Threads MCP changelog
+# Threads MCP Server & CLI changelog
 
 | Component | Version | Last Updated |
 |-----------|---------|--------------|
-| threads-mcp | 1.0.0 | 2026-08-31 |
+| threads-mcp-cli | 1.1.0 | 2026-09-04 |
+
+---
+
+## 1.1.0
+
+A second surface, and a new name to match it.
+
+### The CLI
+
+Every one of the 30 tools is now also a shell command. `threads-cli` lists them,
+`threads-cli <command> --help` derives the flags from the same Zod schema an MCP
+client is handed, and `threads-cli schema <command>` prints that schema so you
+can check the two surfaces really are one thing. They read the same `ALL_TOOLS`
+array through the same handlers and the same `WriteGuard`, so a tool added
+tomorrow is a command tomorrow.
+
+`--confirm` is the shell spelling of the confirmation posting and deleting
+require. `--json`, `--compact` and `--agent` cover machine output, `--select
+a,b.c` keeps only the fields you asked for, and errors are JSON on stderr
+whichever you pick.
+
+Exit codes a script can branch on without reading prose: 0 ok, 2 bad arguments
+or a refused write, 3 not found, 4 the token was rejected, 5 the Threads API
+failed, 7 rate limited, 10 nothing configured yet. `doctor`, `login` and
+`refresh` are reachable from the CLI binary, because they are what someone
+types when nothing works yet.
+
+The point of the second surface is what it costs. The MCP server sends all 30
+tool definitions on every turn, measured at ~9,450 tokens. A command sends
+nothing until you type it.
+
+### Renamed to threads-mcp-cli
+
+The package is now `@thenavidm/threads-mcp-cli` and the repository is
+`thenavidm/threads-mcp-cli`. `@thenavidm/threads-mcp` is deprecated on npm and
+points at the new name. The binaries are unchanged: `threads-mcp` for the server,
+`threads-cli` for the shell.
+
+Every GitHub link also moved from the old account name to `thenavidm`. The old
+one only resolved through GitHub's rename redirect, which stops working the
+moment someone else claims it.
+
+### Claude Desktop extension
+
+`desktop-extension/build.sh` produces a `.mcpb` that installs on a double click.
+It vendors its own dependencies rather than shelling out to `npx`, and its
+`user_config` takes a pasted token, a username and a read-only switch. Leave the
+token empty and it picks up the refreshable one `login` wrote.
 
 ---
 

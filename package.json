@@ -1,6 +1,6 @@
 {
   "name": "@thenavidm/threads-mcp-cli",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Threads MCP server and CLI for Claude Code and AI agents. 30 tools for posting, chained threads, carousels, replies and reply approvals, insights, keyword search and profile discovery.",
   "type": "module",
   "main": "./dist/index.js",

@@ -1,0 +1,55 @@
+{
+  "manifest_version": "0.2",
+  "name": "threads",
+  "display_name": "Threads",
+  "version": "1.1.0",
+  "description": "Threads MCP server for Claude Code and AI agents. 30 tools for posting, chained threads, carousels, replies and reply approvals, insights, keyword search and profile discovery.",
+  "long_description": "Connects Claude to your Threads profile over Meta's Threads API, which is separate from Instagram's and needs its own token.\n\nRun `npx -y @thenavidm/threads-mcp-cli login` once in a terminal to authorise a profile. That stores a 60-day token at ~/.threads-mcp/tokens.json, this extension picks it up, and the token refreshes itself from then on. Paste a long-lived token below instead if you already have one, but a token set here cannot be refreshed by anything, so it dies on day 60.\n\nPosting is public the moment it runs, so create_post, create_thread, create_carousel, quote_post, repost, reply_to and delete_post refuse to run without an explicit confirmation.",
+  "author": { "name": "Navid Moazzez", "url": "https://navid.me" },
+  "repository": { "type": "git", "url": "https://github.com/thenavidm/threads-mcp-cli" },
+  "homepage": "https://github.com/thenavidm/threads-mcp-cli",
+  "documentation": "https://github.com/thenavidm/threads-mcp-cli#readme",
+  "support": "https://github.com/thenavidm/threads-mcp-cli/issues",
+  "license": "MIT",
+  "keywords": ["threads", "threads-api", "meta", "social", "mcp"],
+  "server": {
+    "type": "node",
+    "entry_point": "server/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/server/index.js"],
+      "env": {
+        "THREADS_ACCESS_TOKEN": "${user_config.access_token}",
+        "THREADS_USERNAME": "${user_config.username}",
+        "THREADS_READ_ONLY": "${user_config.read_only}"
+      }
+    }
+  },
+  "user_config": {
+    "access_token": {
+      "type": "string",
+      "title": "Threads access token",
+      "description": "Leave empty if you ran `npx -y @thenavidm/threads-mcp-cli login`, which stores a refreshable token. A token pasted here starts with THQ and cannot be refreshed, so it stops working 60 days after it was minted.",
+      "sensitive": true,
+      "required": false
+    },
+    "username": {
+      "type": "string",
+      "title": "Threads username",
+      "description": "Optional. Only used for display and for naming a profile when more than one is connected. Resolved from the token when empty.",
+      "required": false
+    },
+    "read_only": {
+      "type": "boolean",
+      "title": "Read only",
+      "description": "Hide every tool that can post, reply, repost, hide a reply or delete, leaving the 18 reading tools.",
+      "default": false,
+      "required": false
+    }
+  },
+  "compatibility": {
+    "claude_desktop": ">=0.10.0",
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": { "node": ">=20" }
+  }
+}

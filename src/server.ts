@@ -7,6 +7,8 @@
  * something the user has to know to ask for.
  */
 
+import { createRequire } from "node:module";
+
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { ThreadsClient } from "./api/client.js";
 import { loadConfig, type Config } from "./config.js";
@@ -15,7 +17,14 @@ import { ALL_TOOLS } from "./tools/index.js";
 import { makeContext, register } from "./tools/kit.js";
 import { daysRemaining } from "./auth/tokens.js";
 
-export const VERSION = "1.0.0";
+/**
+ * Read from package.json rather than repeated here.
+ *
+ * A hardcoded copy silently drifts: 1.1.0 shipped while `--version` still
+ * answered 1.0.0, because the release bumped one and not the other.
+ */
+const require = createRequire(import.meta.url);
+export const VERSION: string = (require("../package.json") as { version: string }).version;
 
 export const INSTRUCTIONS = `Tools for Threads: posting, chained threads, carousels, replies and reply approvals, insights, keyword search and profile discovery.
 

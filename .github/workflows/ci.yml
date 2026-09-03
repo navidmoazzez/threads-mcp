@@ -54,12 +54,16 @@ jobs:
             | node -e '
               let raw = "";
               process.stdin.on("data", c => raw += c);
-              process.stdin.on("end", () => {
+              process.stdin.on("end", async () => {
                 const listed = raw.trim().split("\n").map(l => JSON.parse(l)).find(m => m.id === 2);
                 const tools = listed?.result?.tools ?? [];
                 console.log(`tools: ${tools.length}`);
-                if (tools.length !== 30) {
-                  console.error(`expected 30 tools, got ${tools.length}`);
+                // Compared against the source, not a number typed here: a
+                // literal turns every tool added into a red build.
+                const { ALL_TOOLS } = await import("./dist/tools/index.js");
+                const expected = ALL_TOOLS.length;
+                if (tools.length !== expected) {
+                  console.error(`handshake exposed ${tools.length} tools, ALL_TOOLS has ${expected}`);
                   process.exit(1);
                 }
                 const unannotated = tools.filter(t => t.annotations?.readOnlyHint === undefined);

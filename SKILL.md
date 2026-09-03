@@ -48,13 +48,13 @@ profile, dead after 60 days unless something refreshes it.
 
 ```bash
 threads-cli doctor     # what is configured and what is wrong
-threads-mcp login      # authorise a profile and store a 60-day token
-threads-mcp refresh    # extend every stored token now
+threads-cli login      # authorise a profile and store a 60-day token
+threads-cli refresh    # extend every stored token now
 ```
 
 Exit code 4 from any command means the token is expired, revoked or absent.
 `list-accounts` reports days remaining; under a week, tell the user to run
-`threads-mcp refresh`. An expired Threads token cannot be recovered.
+`threads-cli refresh`. An expired Threads token cannot be recovered.
 
 Nothing here works without a token. There is no public, unauthenticated read.
 
@@ -102,10 +102,10 @@ is mostly fields you did not ask for.
 |---|---|
 | 0 | Success |
 | 1 | Unknown command, or a tool hidden by `THREADS_READ_ONLY=1` |
-| 2 | Usage error, wrong or missing arguments |
+| 2 | Usage error: wrong or missing arguments, or a write the guard refused |
 | 3 | Not found — a deleted post, an expired container, an id that never existed |
 | 4 | Authentication required, usually an expired or revoked token |
-| 5 | API error upstream, or a write the guard refused |
+| 5 | API error upstream |
 | 7 | Rate limited, wait and retry |
 | 10 | Config error |
 

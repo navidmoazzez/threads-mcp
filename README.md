@@ -1,6 +1,6 @@
 <img src="https://cdn.navid.media/connectors/threads-icon.png" alt="Threads" width="88">
 
-# Threads MCP
+# Threads MCP Server & CLI
 
 [![npm](https://img.shields.io/npm/v/@thenavidm%2Fthreads-mcp-cli?color=orange&label=npm)](https://www.npmjs.com/package/@thenavidm/threads-mcp-cli)
 [![License](https://img.shields.io/badge/License-MIT-green)](./LICENSE)
@@ -8,21 +8,106 @@
 [![X](https://img.shields.io/badge/X-@thenavidm-black?logo=x)](https://x.com/thenavidm)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-thenavidm-0A66C2?logo=linkedin&logoColor=white)](https://linkedin.com/in/thenavidm)
 
-Give any AI agent full control of your Threads profile. Threads has its own API, separate from Instagram's, so it needs its own token.
+Threads MCP server and CLI for Claude Code and AI agents. 30 tools for posting, chained threads, carousels, replies and reply approvals, insights, keyword search and profile discovery.
 
+One install gives you both surfaces, the same tools under the same names,
+covering everything the app does and several things it cannot.
+
+Threads has its own API, separate from Instagram's, so it needs its own token.
 One Meta app can carry both, with one app id and one testers list.
 
 Publishing and deleting ask for confirmation. Everything else is a read.
 
-30 tools. One command to authorise, and the 60-day token refreshes itself from then on.
+One command to authorise, and the 60-day token refreshes itself from then on.
 
 Built and maintained by [Navid Moazzez](https://navid.me?utm_source=github&utm_medium=readme&utm_campaign=threads-mcp-cli).
 
 <img src="https://cdn.navid.media/repos/threads-mcp.gif?v=2" alt="Claude Code using the Threads MCP server" width="520">
 
+## Two ways to use it
+
+### Command line
+
+`threads-cli` in your terminal, for scripting, cron, pipes, or a quick question
+without opening anything:
+
+```bash
+threads-cli                                       # every command, one line each
+threads-cli whoami                                # which profile the token belongs to
+threads-cli get-publishing-limit                  # how much quota is left today
+threads-cli get-posts --limit 10                  # your recent posts
+threads-cli get-top-posts --limit 25              # ranked by engagement against views
+threads-cli search-keyword "model context protocol"
+threads-cli create-post --text "Shipped." --confirm
+threads-cli list-accounts --json | jq -r '.accounts[].username'
+threads-cli <command> --help                      # what any command takes
+```
+
+`--confirm` is the shell spelling of the confirmation that posting, replying and
+deleting require. `--json` gives JSON, `--compact` puts it on one line, `--agent`
+turns on all of the machine-readable defaults at once, and errors are JSON on
+stderr whichever you pick.
+
+`threads-cli schema <command>` prints the exact JSON Schema an MCP client
+receives for that tool, which is how you can check the two surfaces really are
+one thing.
+
+### Output and exit codes
+
+Every command exits with a number a script can branch on, so nothing has to
+parse the message:
+
+| Code | Means |
+|---|---|
+| 0 | It worked |
+| 1 | Unknown command, or one hidden by `THREADS_READ_ONLY=1` |
+| 2 | Bad arguments, or a write refused for want of `--confirm` |
+| 3 | Not found |
+| 4 | The token was rejected |
+| 5 | The Threads API failed |
+| 7 | Rate limited, back off and retry |
+| 10 | Nothing is configured yet, run `threads-cli login` |
+
+```bash
+if ! threads-cli create-post --text "$BODY" --confirm --agent > /tmp/out.json; then
+  case $? in
+    2)  echo "bad arguments, not retrying" >&2; exit 1 ;;
+    7)  echo "rate limited, backing off" >&2 ;;
+    10) echo "no profile connected, run threads-cli login" >&2; exit 1 ;;
+    *)  echo "failed, will retry" >&2 ;;
+  esac
+fi
+```
+
+### MCP server, for AI agents
+
+`threads-mcp` is what Claude Code, Claude Desktop, Cursor and the rest launch.
+You never run it by hand:
+
+```bash
+claude mcp add threads -- npx -y @thenavidm/threads-mcp-cli
+```
+
+No credentials go in that line, because `threads-cli login` already stored the
+token. Then just ask: _"which of my posts this month actually worked, ranked by
+engagement against views?"_
+
+Every other client is in [section 2](#2-install).
+
+### Which one
+
+| Where you are | What you can reach |
+|---|---|
+| An agent that can run shell commands, like Claude Code or Cursor | Both. The CLI is the cheaper one: it costs nothing until you type it |
+| claude.ai, the Claude Desktop chat tab, or a phone | The server only. There is no shell to run a command in |
+| A terminal, a script, cron or CI | The CLI only. There is no MCP client in a shell |
+
+They are the same program reading the same tool definitions, so anything one
+can do, the other can.
+
 ## Contents
 
-| | Section | |
+| # | Section | What is in it |
 |---|---|---|
 | 1 | [What you can ask it](#1-what-you-can-ask-it) | Real prompts, not features |
 | 2 | [Install](#2-install) | Every client, copy and paste |
@@ -76,7 +161,24 @@ That stores a 60-day token at `~/.threads-mcp/tokens.json`, and every client bel
 claude mcp add threads -- npx -y @thenavidm/threads-mcp-cli
 ```
 
+### A terminal
+
+```bash
+npm install -g @thenavidm/threads-mcp-cli
+threads-cli
+```
+
+That gives you two commands: `threads-mcp` is the server your AI tools launch,
+and `threads-cli` is the one you type. Both are the same program.
+
 ### Claude Desktop
+
+The quickest route is the extension: download the
+[`.mcpb`](https://github.com/thenavidm/threads-mcp-cli/releases/latest) from the
+latest release and double-click it. No config file to edit. Leave its token
+field empty and it picks up the refreshable one `login` wrote.
+
+To wire it up by hand instead:
 
 **1. Open the config file.**
 
@@ -84,7 +186,7 @@ In Claude Desktop, go to **Settings**, then **Developer**, then click **Edit Con
 
 If you would rather go straight there:
 
-| | |
+| System | Config file |
 |---|---|
 | macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
 | Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
@@ -113,7 +215,7 @@ If the file is empty or does not exist, paste this whole thing in:
 
 If you already have other servers, add only the `"threads": { ... }` part inside your existing `"mcpServers"`, and put a comma after the entry before it. The file has to stay valid JSON. A single missing comma or a trailing one stops every server from loading, not just this one.
 
-No credentials go in this file, because `login` already stored the token. If you would rather keep it here instead, add an `env` block with `THREADS_ACCESS_TOKEN`, and read [section 9](#10-tokens) first: a token in a config file cannot be refreshed by anything, so it dies on day 60.
+No credentials go in this file, because `login` already stored the token. If you would rather keep it here instead, add an `env` block with `THREADS_ACCESS_TOKEN`, and read [section 10](#10-tokens) first: a token in a config file cannot be refreshed by anything, so it dies on day 60.
 
 **3. Restart properly.**
 
@@ -125,7 +227,7 @@ Look for the tools icon in the message box and click it. You should see `threads
 
 If nothing appears, Claude Desktop's own log is the fastest way in:
 
-| | |
+| System | Log file |
 |---|---|
 | macOS | `~/Library/Logs/Claude/mcp-server-threads.log` |
 | Windows | `%APPDATA%\Claude\logs\mcp-server-threads.log` |
@@ -263,31 +365,59 @@ A missing scope usually shows up as an empty result rather than an error. `threa
 
 ### Pasting a token instead
 
-You can skip `login` and set `THREADS_ACCESS_TOKEN` to a long-lived token you already have. Everything works, with one consequence: the server has nowhere to write a refreshed token, so it cannot keep that one alive. See [section 9](#10-tokens).
+You can skip `login` and set `THREADS_ACCESS_TOKEN` to a long-lived token you already have. Everything works, with one consequence: the server has nowhere to write a refreshed token, so it cannot keep that one alive. See [section 10](#10-tokens).
 
 Tokens from Meta's Graph API Explorer are **short-lived** and stop working in an hour. That is the single most common reason a Threads setup "randomly breaks".
 
 ## 4. What it costs to have connected
 
-Every MCP server sends its whole tool list to the model on **every turn**,
-whether you mention it or not. Measured on this one:
+Both surfaces carry the same 30 tools. They differ in when you pay for them.
 
-| | Sent per turn |
+| Question | MCP server | CLI |
+|---|---|---|
+| Loaded every turn | **~9,450 tokens** | nothing |
+| Loaded when Threads comes up | nothing more | ~2,050, once |
+| Works on claude.ai and mobile | yes | no, there is no shell there |
+| Works in a script, cron or CI | no | yes |
+| You invoke it by | asking in plain language | typing a command |
+
+An MCP server sends its whole tool list to the model on **every turn**, whether
+you mention Threads or not. That is the price of being connected at all, before
+you ask anything. It is not unusual, and almost nobody publishes it.
+
+The 9,450 is measured, not estimated: a real `initialize` and `tools/list`
+handshake against this server returns 37,806 characters of tool definitions and
+server instructions. The CLI's 2,050 is the size of the [SKILL.md](SKILL.md)
+that ships in the package, and an agent only reads it once the subject comes up.
+
+Over twenty turns where Threads comes up once, that is roughly 189,000 tokens
+against 2,050. When the whole conversation is about your profile, the gap closes
+and the server is the better experience, because you ask in plain language
+instead of remembering flags.
+
+### Where the 9,450 goes
+
+Worth knowing, because it is mostly not something anyone can write away:
+
+| Part of the payload | Share |
 |---|---|
-| 30 tool definitions, plus the server instructions | **~9,500 tokens** |
+| JSON Schema structure: types, required lists, nesting | **53%** |
+| Argument descriptions | 30% |
+| Tool descriptions | 17% |
 
-That is the price of it being connected at all, before you ask anything. It is
-not unusual, and almost nobody publishes it.
+Half of it is the protocol serialising every tool as JSON Schema. Any MCP server
+with this many tools pays the same. The other half is prose, and it is what makes
+the tools usable without guessing.
 
-Two ways to spend less.
+### Spending less
 
-**Turn it off when you are not using it.** In Claude Code that is
+**Turn the server off when you are not using Threads.** In Claude Code that is
 `@threads` to toggle, and every client has an equivalent.
+`THREADS_READ_ONLY=1` drops it to the 18 reading tools, about 5,060 tokens.
 
-**Or reach for a shell instead.** A command is not in the context window, so it
-costs nothing on the turns you do not use it. It is not free either: an agent
-still needs the skill file, roughly 1,300 tokens, but only once the subject
-comes up rather than on every turn regardless.
+**Or install the CLI and skip the server.** All 30 tools stay reachable, the
+standing cost falls to nothing until you type a command, and you connect the
+server later on the days it earns its place.
 
 ## 5. Tools
 
@@ -674,7 +804,7 @@ Read this before you install.
 - **A thread can half-publish.** Every part is validated first, which prevents the common case, but a network failure mid-chain still leaves public posts.
 - **Deleting is permanent and rationed.** 100 per rolling 24 hours, no archive, no undo.
 - **Anything you read is untrusted text.** See [prompt injection](#prompt-injection).
-- **A token that lapses is gone.** See [section 9](#10-tokens).
+- **A token that lapses is gone.** See [section 10](#10-tokens).
 - **Quotas are real.** 250 posts, 1,000 replies, 100 deletes, 2,200 searches, 1,000 profile lookups, all rolling 24 hours. A bulk run will hit them.
 
 If any of that is more than you want to hand an agent, `THREADS_READ_ONLY=1` gives you 18 tools that cannot change anything.
@@ -687,19 +817,21 @@ If any of that is more than you want to hand an agent, `THREADS_READ_ONLY=1` giv
 |---|---|
 | Every call returns empty | You are not a Threads Tester on your own app, or you never accepted the invite. See [section 3](#3-connect-your-account) |
 | "Threads rejected the token" | It expired, or it was a short-lived Graph Explorer token. Run `threads-mcp login` |
-| Worked yesterday, dead today, about two months in | The 60-day token lapsed. It cannot be refreshed, only replaced. See [section 9](#10-tokens) |
+| Worked yesterday, dead today, about two months in | The 60-day token lapsed. It cannot be refreshed, only replaced. See [section 10](#10-tokens) |
 | `search_keyword` only ever returns your own posts | `threads_keyword_search` is not approved. Meta narrows the search instead of refusing it |
 | `lookup_profile` only resolves Meta's accounts | `threads_profile_discovery` needs expanded access |
 | `get_follower_demographics` returns nothing | Under 100 followers, or `threads_manage_insights` is missing |
 | Container error a few minutes after posting | The media URL. It has to be public HTTPS, an image or video content type, and not redirect to a login page |
 | "still processing after 120s" | A long video. The container is not lost; `publish_staged` with that id still works for 24 hours |
-| "will not run without confirm: true" | Working as intended. See [section 5](#6-writing-safely) |
+| "will not run without confirm: true" | Working as intended. See [section 6](#6-writing-safely) |
 | "is a Threads permalink" | Threads has no endpoint converting a permalink to an id. Use the numeric id from `get_posts` |
 | Rate limited | A rolling-24-hour quota. `get_publishing_limit` shows what is left |
 
 Server not appearing at all: run the command your client runs, by hand, and read stderr.
 
 ## Environment variables
+
+### Credentials
 
 | Variable | Default | What it does |
 |---|---|---|
@@ -713,9 +845,19 @@ Server not appearing at all: run the command your client runs, by hand, and read
 | `THREADS_TOKEN_STORE` | `~/.threads-mcp/tokens.json` | Where tokens are kept |
 | `THREADS_PERSIST_TOKENS` | `1` | Write refreshed tokens back to the store |
 | `THREADS_REFRESH_WINDOW_DAYS` | `20` | Refresh this many days before expiry |
-| `THREADS_READ_ONLY` | `0` | Hide every write from the tool list |
+
+### Safety
+
+| Variable | Default | What it does |
+|---|---|---|
+| `THREADS_READ_ONLY` | `0` | `1` hides every write from the tool list, leaving 18 reads |
 | `THREADS_ALLOW_DESTRUCTIVE` | `1` | `0` blocks posting, replying and deleting |
 | `THREADS_AUDIT_LOG` | none | Append-only log of every attempted write |
+
+### Tuning
+
+| Variable | Default | What it does |
+|---|---|---|
 | `THREADS_CONTAINER_TIMEOUT_MS` | `120000` | How long to wait for media to process |
 | `THREADS_REQUEST_TIMEOUT_MS` | `30000` | Per-request deadline |
 | `THREADS_MIN_REQUEST_INTERVAL_MS` | `120` | Spacing between requests |
